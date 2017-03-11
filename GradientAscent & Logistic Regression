@@ -1,0 +1,67 @@
+# machine-learning-study
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+df = pd.read_csv(r"C:\Users\haoran\Desktop\testSet.csv",encoding="utf8",names = ['a','b','label'])
+
+sns.pairplot(df,hue = 'label')
+
+data = np.array(df[['a','b']])
+label = np.array(df['label'])
+
+def sigmoid(x):
+    y  = 1/(1+np.exp(-x))
+    return y
+    
+## 梯度上升
+def GradientAscent (data,label,alpha):#alpha 是移动速度
+    m,n = data.shape
+    para = np.ones((m,1))
+    data1 = np.hstack((para,data))
+    w = np.ones((n+1,1))
+    for i in range(2000):
+        error = label.reshape((100,1)) - sigmoid(data1.dot(w))
+        w = w + alpha * data1.T.dot(error)
+        if i % 1000 == 0 : print(np.mean(error**2))
+    return w
+        
+GradientAscent(data,label,0.0001)
+
+##随机梯度上升，一次只取一个样本来更新参数
+
+def StochasticGA (data,label):
+    m,n = data.shape
+    para = np.ones((m,1))
+    data1 = np.hstack((para,data))
+    w = np.ones((n+1,1))
+    for i in range(m):
+        error = label.reshape((100,1))[i] - sigmoid(data1[i,:].dot(w))
+        w = w + 0.001*error*((data1[i,:]).reshape((n+1,1)))
+    return w
+    
+
+df1 = pd.read_table(r"c:/Users/haoran/Desktop/horseColicTraining.txt",header = None) 
+
+sum(df1.isnull()) 
+_ = df1.fillna(0,inplace = True)  
+df1[21].unique()
+
+data1 = df1.ix[:,:20]
+label1 = df1.ix[:,21]       
+        
+GradientAscent(data1,label1,0.001)      
+        
+def GradientAscent (data1,label1,alpha):#随机梯度上升
+    m,n = data1.shape
+    para = np.ones((m,1))
+    data2 = np.hstack((para,data1))
+    w = np.ones((n+1,1))
+    for i in range(2000):
+        error = label1.reshape((m,1)) - sigmoid(data2.dot(w))
+        w = w + alpha * data2.T.dot(error)
+        if i % 1000 == 0 : print(np.mean(error**2))
+    return w
+        
+GradientAscent(data,label,0.0001) 
